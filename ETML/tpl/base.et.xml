@@ -1,0 +1,72 @@
+<et:email>
+	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+	<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>{subject}</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<style type="text/css">
+			{styles}
+		</style>
+	</head>
+	<body style="margin: 0; padding: 0;">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td align="center">{children}</td>
+			</tr>
+		</table>
+	</body>
+
+	</html>
+	<et:css>
+		body {
+			background: #FFFFFF;
+		}
+		p {
+			line-height: 1.3em;
+			margin-top: 0;
+			margin-bottom: 1em;
+		}
+		p:last-child {
+			margin-bottom: 0;
+		}
+	</et:css>
+</et:email>
+<et:cols>
+	<et:css>
+		table {
+			margin: 0;
+			padding: 0;
+			border-collapse: collapse;
+			border-spacing: 0;
+			border: none;
+			table-layout: fixed;
+		}
+	</et:css>
+	<table border="0" cellpadding="0" cellspacing="0" width="100%">
+		{children}
+	</table>
+</et:cols>
+<et:row>
+	<tr>{children}</tr>
+	<et:css>
+tr {
+	border: none;
+	margin: 0;
+	padding: 0;
+}
+	</et:css>
+</et:row>
+<et:col>
+	<td width="{width:auto}">{children}</td>
+	<et:css>
+td {
+	border: none;
+	margin: 0;
+	padding: 0;
+}
+	</et:css>
+</et:col>
+<et:image>
+	<img src="{url}" border="0" style="display:block;border:none;" alt="{title}" />
+</et:image>
