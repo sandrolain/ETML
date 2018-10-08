@@ -1,0 +1,151 @@
+<e-mail>
+
+	<style>
+		/* CLIENT-SPECIFIC STYLES */
+		body, table, td, a, p { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;
+			font-family: Arial, sans-serif; font-size:14px;
+		}
+
+		table {
+			margin: 0;
+			padding: 0;
+			border-collapse: collapse;
+			border-spacing: 0;
+			border: none;
+			table-layout: fixed;
+		}
+		tr {
+			border: none;
+			margin: 0;
+			padding: 0;
+		}
+		td {
+			border: none;
+			margin: 0;
+			padding: 0;
+		}
+
+		table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+		img { -ms-interpolation-mode: bicubic; }
+
+		/* RESET STYLES */
+		img { border: 0; outline: none; text-decoration: none; }
+		table { border-collapse: collapse !important; }
+		body { margin: 0 !important; padding: 0 !important; width: 100% !important; }
+
+		/* iOS BLUE LINKS */
+		a[x-apple-data-detectors] {
+		color: inherit !important;
+		text-decoration: none !important;
+		font-size: inherit !important;
+		font-family: inherit !important;
+		font-weight: inherit !important;
+		line-height: inherit !important;
+		}
+
+		/* ANDROID CENTER FIX */
+		div[style*="margin: 16px 0;"] { margin: 0 !important; }
+
+		/* MEDIA QUERIES */
+		@media all and (max-width:639px){ 
+		.wrapper{ width:320px!important; padding: 0 !important; }
+		.container{ width:300px!important;  padding: 0 !important; }
+		.mobile{ width:300px!important; display:block!important; padding: 0 !important; }
+		.img{ width:100% !important; height:auto !important; }
+		*[class="mobileOff"] { width: 0px !important; display: none !important; }
+		*[class*="mobileOn"] { display: block !important; max-height:none !important; }
+		}
+	</style>
+
+	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+	<html lang="en">
+		<head>
+			<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1">
+			<meta http-equiv="X-UA-Compatible" content="IE=edge">
+			<title>%subject%</title>
+			%styles%
+		</head>
+		<body style="margin:0; padding:0; background-color:{bgcolor:#F2F2F2};">
+			<center>
+				<table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="{bgcolor:#F2F2F2}">
+					<tr>
+						<td align="center" valign="top">{children}</td>
+					</tr>
+				</table>
+			</center>
+		</body>
+	</html>
+
+</e-mail>
+
+<e-cols>
+	<table border="0" cellpadding="0" cellspacing="0" width="{width:100%}" class="mobile">
+		<tr>
+			{children}
+		</tr>
+	</table>
+</e-cols>
+
+<e-col>	
+	<td class="mobile" width="{width:auto}" align="{align:center}" valign="top" style="text-align:{align:center}">{children}</td>
+</e-col>
+
+<e-space>
+	<table>
+		<tr>
+			<td height="{height:10}" style="font-size:{height:10}px; line-height:{height:10}px;" class="mobileOn">&nbsp;</td>
+		</tr>
+	</table>
+</e-space>
+
+<e-content>
+	<table width="{width:100%}" cellpadding="0" cellspacing="0" border="0" class="mobile">
+		<tr>
+			<td align="center" valign="top">
+				{children}
+			</td>
+		</tr>
+	</table>
+</e-content>
+
+<e-image>
+	<img src="{url}" width="{width:auto}" height="{height:auto}" style="margin:0; padding:0; border:none; display:block;" border="0" class="img" alt="{title}" />
+</e-image>
+
+<e-p>
+	<p style="margin:0; padding:0; margin-bottom:15px; font-family: Arial, sans-serif; font-size:14px;">{children}</p>
+</e-p>
+
+<e-h>
+	<h{level:1} style="margin:0; padding:0; margin-bottom:15px;">{children}</h{level:1}>
+</e-h>
+
+<e-link>
+	<a href="{url}" target="_blank" style="color:#336699; text-decoration:underline;">{children}</a>
+</e-link>
+
+<e-button>
+	<table width="{width:200}" height="{height:44}" cellpadding="0" cellspacing="0" border="0" bgcolor="{bgcolor:#2b3a63}" style="border-radius:{radius:4}px;">
+		<tr>
+			<td align="center" valign="middle" height="{height:44}" style="font-family: Arial, sans-serif; font-size:14px; font-weight:bold;">
+				<a href="{url}" target="_blank" style="font-family: Arial, sans-serif; color:#ffffff; display: inline-block; text-decoration: none; line-height:{height:44}px; width:{width:200}px; font-weight:bold;">{children}</a>
+			</td>
+		</tr>
+	</table>
+</e-button>
+
+
+<e-mobile>
+	<!--[if !mso]><!-- -->
+	<div class="mobileOn" style="font-size: 0; max-height: 0; overflow: hidden; display: none">                
+	<table width="100%" cellspacing="0" cellpadding="0" border="0" class="mobile" align="center">    
+		<tr>
+		<td align="center" valign="top" style="color: #000000; font-size: 12px; line-height: 18px;">
+			{children}
+		</td>
+		</tr>
+	</table>                                                                    
+	</div>                                                                    
+	<!--<![endif]-->
+</e-mobile>

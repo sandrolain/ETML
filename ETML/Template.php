@@ -2,24 +2,47 @@
 
 namespace ETML;
 
+/**
+ * 
+ * @namespace ETML
+ * @class Template
+ * 
+ */
 class Template
 {
-	protected $fileExt		= 'et.xml';
-	protected $tagPrefix	= 'et';
-	protected $fileSource;
+	protected $fileExt		= 'et.htm';
+	protected $tagPrefix	= 'e-';
+	protected $source;
 	protected $doc;
 	protected $styles		= [];
 	protected $tags			= [];
 
-	public function __construct(string $filePath = '')
+	public function __construct(string $source = '')
 	{
-		if(!empty($filePath))
+		if(!empty($source))
 		{
-			$this->load($filePath)->parse();
+			if(FALSE !== strpos($source, '<'))
+			{
+				$this->loadFromSource($source);
+			}
+			else
+			{
+				$this->loadFromFile($source)->parse();
+			}
 		}
 	}
 
-	public function load(string $filePath = 'base')
+	public function loadFromSource(string $source)
+	{
+		if(empty($source))
+		{
+			throw new \Exception("Template source can not be empty", 105);
+		}
+
+		$this->source = $source;
+	}
+
+	public function loadFromFile(string $filePath = 'base')
 	{
 		// If parameter is not a path
 		if(strpos($filePath, '/') === FALSE)
@@ -29,34 +52,33 @@ class Template
 			$filePath = __DIR__ . "/tpl/{$fileName}";
 		}
 
-		if(is_file($filePath))
-		{
-			if($fileSource = \file_get_contents($filePath))
-			{
-				$this->fileSource = $fileSource;
-			}
-			else
-			{
-				throw new \Exception("Cannot load template file source", 102);
-			}
-		}
-		else
+		if(!is_file($filePath))
 		{
 			throw new \Exception("Template file not found", 101);
 		}
+
+		$fileSource = \file_get_contents($filePath);
+
+		if(!$fileSource)
+		{
+			throw new \Exception("Cannot load template file source", 102);
+		}
+
+		$this->loadFromSource($fileSource);
 
 		return $this;
 	}
 
 	public function parse()
 	{
-		if(empty($this->fileSource))
+		if(empty($this->source))
 		{
-			throw new \Exception("Empty file source", 103);
+			throw new \Exception("Template source can not be empty", 103);
 		}
 
-		$num = preg_match_all("@<({$this->tagPrefix}\:([^>]+))>(.*)</\\1>@six", $this->fileSource, $matches, PREG_SET_ORDER);
-		
+		$tagPrefix = preg_quote($this->tagPrefix);
+
+		$num = preg_match_all("@<({$tagPrefix}([^>]+))>(.*)</\\1>@six", $this->source, $matches, PREG_SET_ORDER);		
 
 		if($num === FALSE)
 		{
@@ -65,8 +87,8 @@ class Template
 
 		foreach($matches as $row)
 		{
-			// 2 : name
-			$name = $row[2];
+			// 1 : name
+			$name = $row[1];
 
 			if($name == 'css')
 			{
@@ -74,20 +96,22 @@ class Template
 			}
 			
 			// 3 : code
-			$code = $row[3];
+			$code	= $row[3];
 
-			// obtain and remove style tag
-			if(preg_match('@<et:css[^>]*>(.*)</et:css>@six', $code, $m))
+			$style	= '';
+			
+			// obtain and remove css style tag
+			if(preg_match("@<(style)(\s+[^>]*)?>(.*)</\\1>@six", $code, $m))
 			{
-				$this->styles[$name] = $m[1];
+				$style	= $m[3];
 
-				$code = str_replace($m[0], '', $code);
+				$code	= str_replace($m[3], '', $code);
 			}
 
-			$this->tags[$name] = $code;
+			$this->setTagCode($name, $code, $style);
 		}
 
-		//echo '<pre>' . htmlspecialchars(var_export($this->tags, TRUE));
+		return $this;
 	}
 
 	public function setTagCode(string $name, string $code, string $style = '')
@@ -96,7 +120,7 @@ class Template
 
 		if(!empty($style))
 		{
-			$this->setStyle($name, $style);
+			$this->setTagStyle($name, $style);
 		}
 
 		return $this;
@@ -121,19 +145,37 @@ class Template
 	
 	public function getTags()
 	{
-		return array_keys($this->tags);
+		$tags = array_keys($this->tags);
+
+		sort($tags);
+
+		return $tags;
 	}
+
+	////////////////////////////////////////////////////////////////
+	// Static Properties and Methods
 
 	protected static $templates = [];
 
-	public static function get(string $template = '')
+	/**
+	 * get
+	 *
+	 * @static
+	 * 
+	 * @param string $source
+	 *
+	 * @return Template instance
+	 */
+	public static function get(string $source = '')
 	{
-		if(!isset(self::$templates[$template]))
+		$sourceMd5 = md5($source);
+
+		if(!isset(self::$templates[$sourceMd5]))
 		{
-			self::$templates[$template] = new Template($template);
+			self::$templates[$sourceMd5] = new Template($source);
 		}
 
-		return self::$templates[$template];
+		return self::$templates[$sourceMd5];
 	}
 
 }

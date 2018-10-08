@@ -25,6 +25,16 @@ class Email
 		$this->code	= $code;
 	}
 
+	public function setSubject(string $value)
+	{
+		return $this->setProp('subject', $value);
+	}
+
+	public function setBody(string $value)
+	{
+		return $this->setProp('body', $value);
+	}
+
 	public function setProp(string $name, string $value)
 	{
 		if(empty($name))
@@ -74,7 +84,15 @@ class Email
 
 		$tags		= $tpl->getTags();
 
-		$tagsRegExp	= '{(?:<(' . implode('|', $tags) . ')([^>]*)>((?:(?:(?!<\\1[^>]*>|</\\1>).)++|<\\1[^>]*>(?1)</\\1>)*)</\\1>|<(' . implode('|', $tags) . ')([^>]*)/>)}si';
+		$tags		= array_map(function($tag)
+		{
+			return preg_quote($tag);
+
+		}, $tags);
+
+		$tagsStr = implode('|', $tags);
+
+		$tagsRegExp	= '{(?:<(' . $tagsStr . ')(\s+[^>]*)?>((?:(?:(?!<\\1[^>]*>|</\\1>).)++|<\\1[^>]*>(?1)</\\1>)*)</\\1>|<(' . $tagsStr . ')(\s+[^>]*)?/>)}si';
 
 		$usedTags	= [];
 
@@ -135,24 +153,31 @@ class Email
 
 		if(isset($props['styles']))
 		{
-			$usedStyles[] = $props['styles'];
+			$usedStyles[]	= $props['styles'];
 		}
+
+		//dj($usedStyles);
 
 		$usedStyles			= implode("\n", $usedStyles);
 		$usedStyles			= preg_replace('/\s+/', ' ', $usedStyles);
 
-		$props['styles']	= $usedStyles;
+		$props['styles']	= '<style type="text/css">' . $usedStyles . '</style>';
 
 		// --------------------------------
 
 		// replace code props
-		$code	= $this->replacePropsList($code, $props);
+		$code	= $this->replacePropsList($code, $props, '%', '%');
 
 		// clean remaining code variables
 		$code	= $this->replaceNotFoundProps($code);
 
+		// clean remaining code props
+		$code	= $this->replaceNotFoundProps($code, '%', '%');
+
 		// minify html code
 		$code	= $this->cleanHTML($code);
+
+		//die(htmlspecialchars($code));
 
 		return $code;
 	}
@@ -195,14 +220,14 @@ class Email
 			'/\>[^\S ]+/s',     // strip whitespaces after tags, except space
 			'/[^\S ]+\</s',     // strip whitespaces before tags, except space
 			'/(\s)+/s',         // shorten multiple whitespace sequences
-			'/<!--(.|\s)*?-->/' // Remove HTML comments
+			//'/<!--(.|\s)*?-->/' // Remove HTML comments
 		);
 	
 		$replace = array(
 			'>',
 			'<',
 			'\\1',
-			''
+			//''
 		);
 	
 		return preg_replace($search, $replace, $html);
