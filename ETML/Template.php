@@ -1,11 +1,20 @@
 <?php
 
+/**
+ * @author Sandro Lain
+ * @since 0.1
+ */
+
+ /**
+ * ETML 
+ * 
+ */
 namespace ETML;
 
 /**
+ * Template
  * 
- * @namespace ETML
- * @class Template
+ * @package ETML
  * 
  */
 class Template
@@ -17,6 +26,13 @@ class Template
 	protected $styles		= [];
 	protected $tags			= [];
 
+	/**
+	 * __construct
+	 *
+	 * @param  string $source Template source code, or template file fullpath, or template file name into ETML/tpl directory
+	 *
+	 * @return void
+	 */
 	public function __construct(string $source = '')
 	{
 		if(!empty($source))
@@ -32,16 +48,30 @@ class Template
 		}
 	}
 
+	/**
+	 * loadFromSource
+	 *
+	 * @param  string $source Template source code
+	 *
+	 * @return void
+	 */
 	public function loadFromSource(string $source)
 	{
 		if(empty($source))
 		{
-			throw new \Exception("Template source can not be empty", 105);
+			throw new Exception("Template source can not be empty", 105);
 		}
 
 		$this->source = $source;
 	}
 
+	/**
+	 * loadFromFile
+	 *
+	 * @param  string $filePath Template file fullpath or template file name into ETML/tpl directory
+	 *
+	 * @return Template $this
+	 */
 	public function loadFromFile(string $filePath = 'base')
 	{
 		// If parameter is not a path
@@ -54,14 +84,14 @@ class Template
 
 		if(!is_file($filePath))
 		{
-			throw new \Exception("Template file not found", 101);
+			throw new Exception("Template file not found", 101);
 		}
 
 		$fileSource = \file_get_contents($filePath);
 
 		if(!$fileSource)
 		{
-			throw new \Exception("Cannot load template file source", 102);
+			throw new Exception("Cannot load template file source", 102);
 		}
 
 		$this->loadFromSource($fileSource);
@@ -69,11 +99,16 @@ class Template
 		return $this;
 	}
 
+	/**
+	 * parse
+	 *
+	 * @return Template $this
+	 */
 	public function parse()
 	{
 		if(empty($this->source))
 		{
-			throw new \Exception("Template source can not be empty", 103);
+			throw new Exception("Template source can not be empty", 103);
 		}
 
 		$tagPrefix = preg_quote($this->tagPrefix);
@@ -82,7 +117,7 @@ class Template
 
 		if($num === FALSE)
 		{
-			throw new \Exception("Parser RegExp error: " . preg_last_error(), 104);
+			throw new Exception("Parser RegExp error: " . preg_last_error(), 104);
 		}
 
 		foreach($matches as $row)
@@ -105,7 +140,7 @@ class Template
 			{
 				$style	= $m[3];
 
-				$code	= str_replace($m[3], '', $code);
+				$code	= str_replace($m[0], '', $code);
 			}
 
 			$this->setTagCode($name, $code, $style);
@@ -114,8 +149,19 @@ class Template
 		return $this;
 	}
 
+	/**
+	 * setTagCode
+	 *
+	 * @param  string $name Tag name
+	 * @param  string $code The HTML code corresponding to the tag
+	 * @param  string $style The CSS code associated with the tag
+	 *
+	 * @return Template $this
+	 */
 	public function setTagCode(string $name, string $code, string $style = '')
 	{
+		$name = mb_strtolower($name);
+
 		$this->tags[$name] = $code;
 
 		if(!empty($style))
@@ -126,13 +172,32 @@ class Template
 		return $this;
 	}
 
+	/**
+	 * getTagCode
+	 *
+	 * @param  string $name Tag name
+	 *
+	 * @return string The HTML code corresponding to the tag
+	 */
 	public function getTagCode(string $name)
 	{
+		$name = mb_strtolower($name);
+
 		return isset($this->tags[$name]) ? $this->tags[$name] : '';
 	}
 
+	/**
+	 * setTagStyle
+	 *
+	 * @param  mixed $name
+	 * @param  mixed $style
+	 *
+	 * @return void
+	 */
 	public function setTagStyle(string $name, string $style)
 	{
+		$name = mb_strtolower($name);
+
 		$this->styles[$name] = $style;
 
 		return $this;
@@ -140,6 +205,8 @@ class Template
 
 	public function getTagStyle(string $name)
 	{
+		$name = mb_strtolower($name);
+
 		return isset($this->styles[$name]) ? $this->styles[$name] : '';
 	}
 	

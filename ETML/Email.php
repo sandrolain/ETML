@@ -35,11 +35,26 @@ class Email
 		return $this->setProp('body', $value);
 	}
 
+	public function setFullname(string $value)
+	{
+		return $this->setProp('fullname', $value);
+	}
+
+	public function setFirstname(string $value)
+	{
+		return $this->setProp('firstname', $value);
+	}
+
+	public function setAddress(string $value)
+	{
+		return $this->setProp('address', $value);
+	}
+
 	public function setProp(string $name, string $value)
 	{
 		if(empty($name))
 		{
-			throw new \Exception("Empty prop name", 201);
+			throw new Exception("Empty prop name", 201);
 		}
 
 		$this->props[$name] = $value;
@@ -51,7 +66,7 @@ class Email
 	{
 		if(empty($name))
 		{
-			throw new \Exception("Empty prop name", 202);
+			throw new Exception("Empty prop name", 202);
 		}
 
 		return $this->props[$name];
@@ -73,24 +88,16 @@ class Email
 	{
 		if(!$this->template)
 		{
-			throw new \Exception("Template not defined", 203);
+			throw new Exception("Template not defined", 203);
 		}
 
 		$tpl		= $this->template;
-
 		$code		= $this->code;
-
 		$props		= $this->props;
 
 		$tags		= $tpl->getTags();
-
-		$tags		= array_map(function($tag)
-		{
-			return preg_quote($tag);
-
-		}, $tags);
-
-		$tagsStr = implode('|', $tags);
+		$tags		= array_map(function($tag) { return preg_quote($tag); }, $tags);
+		$tagsStr	= implode('|', $tags);
 
 		$tagsRegExp	= '{(?:<(' . $tagsStr . ')(\s+[^>]*)?>((?:(?:(?!<\\1[^>]*>|</\\1>).)++|<\\1[^>]*>(?1)</\\1>)*)</\\1>|<(' . $tagsStr . ')(\s+[^>]*)?/>)}si';
 
@@ -150,15 +157,18 @@ class Email
 		{
 			$usedStyles[] = $tpl->getTagStyle($tagName);
 		}
-
+		
 		if(isset($props['styles']))
 		{
 			$usedStyles[]	= $props['styles'];
 		}
 
-		//dj($usedStyles);
-
 		$usedStyles			= implode("\n", $usedStyles);
+
+		// Remove CSS comments
+		$usedStyles			= preg_replace( '!/\*[^*]*\*+([^/][^*]*\*+)*/!' , '', $usedStyles);
+
+		// Minify CSS code
 		$usedStyles			= preg_replace('/\s+/', ' ', $usedStyles);
 
 		$props['styles']	= '<style type="text/css">' . $usedStyles . '</style>';
@@ -176,8 +186,6 @@ class Email
 
 		// minify html code
 		$code	= $this->cleanHTML($code);
-
-		//die(htmlspecialchars($code));
 
 		return $code;
 	}
