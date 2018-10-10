@@ -1,14 +1,10 @@
 <?php
 
-
 namespace ETML;
-
-require_once __DIR__ . '/Email.php';
-require_once __DIR__ . '/Template.php';
 
 class ETML
 {
-	const VERSION	= '0.2';
+	const VERSION	= '0.3';
 
 	/**
 	 * getTemplate
@@ -42,18 +38,19 @@ class ETML
 	{
 		return new Email();
 	}
+
+	/**
+	 * dj
+	 * 
+	 * Debug function
+	 *
+	 * @param  mixed $var
+	 *
+	 * @return void
+	 */
+	public static function dj($var)
+	{
+		die("<pre>" . print_r($var, true) . "</pre>");
+	}
 }
 
-/**
- * dj
- * 
- * Debug function
- *
- * @param  mixed $var
- *
- * @return void
- */
-function dj($var)
-{
-	die("<pre>" . print_r($var, true) . "</pre>");
-}

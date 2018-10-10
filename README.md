@@ -2,6 +2,8 @@
 
 This library is designed to simplify the creation of html emails formatted according to a predefined template.
 
+It can be used to format an entire email to be used for example as a newsletter, or to define a default template where to specify different variables for each email such as the subject and the text of the message.
+
 The operation is based on the definition of some custom html / xml tags that are then replaced with an associated html string. The logic wants to be similar to the components of libraries like reactjs or vuejs.
 
 The actual development was designed for PHP, but I expect the javascript implementation for node.js.
@@ -20,12 +22,13 @@ The actual development was designed for PHP, but I expect the javascript impleme
 - [x] Template parser
 - [x] Email builder
 - [x] Better manage standard global variables (subject, body, ecc)
-- [ ] Methods for define default properties by e-tag and by id
-- [ ] Extended test cases
-- [ ] Creation of some basic templates
+- [x] Methods for define default properties by e-tag and by id
+- [x] Setup autoload
+- [ ] Live Example
 - [ ] Creation of some examples
-- [ ] Setup autoload
+- [ ] Creation of some basic templates
 - [ ] Setup for Composer
+
 
 
 ## Extra ToDo
@@ -37,3 +40,7 @@ The actual development was designed for PHP, but I expect the javascript impleme
 ## Notes
 
 - For the template files I used the file extension .htm to allow the text editors to activate the html syntax. However, the content is not a valid HTML or XML structure
+
+## License
+
+[License](./LICENSE.md)

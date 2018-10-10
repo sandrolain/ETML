@@ -74,12 +74,14 @@ class Template
 	 */
 	public function loadFromFile(string $filePath = 'base')
 	{
+		$s = DIRECTORY_SEPARATOR;
+
 		// If parameter is not a path
-		if(strpos($filePath, '/') === FALSE)
+		if(strpos($filePath, $s) === FALSE)
 		{
 			$fileName = strpos($filePath, ".{$this->fileExt}") ? $filePath : "{$filePath}.{$this->fileExt}";
 
-			$filePath = __DIR__ . "/tpl/{$fileName}";
+			$filePath = __DIR__ . "{$s}..{$s}tpl{$s}{$fileName}";
 		}
 
 		if(!is_file($filePath))
